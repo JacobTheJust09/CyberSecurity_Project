@@ -1,0 +1,172 @@
+
+NET-09-L1
+Configuring VLANs, Trunks, and More
+1. Lab topology window
+2. Activity window
+PKA Features
+Note the following essential information regarding the Activity window:
+1. Completion Percentage – Student progress appears at the bottom right corner of the window.
+2. Check Result Button – When you click this button and then click the "Assessment Items" tab, you will find a checklist with lab objectives and status, whereby V=done, X=not done.
+Note: Both features help the instructor grade the exercise swiftly and efficiently.
+Page 5
+Lab Task 1: Revision Questions
+Answer the following questions as a review of VLANs.
+1 What are the benefits of creating VLANs?
+2 What happens when a computer connected to a switch sends a broadcast, such as an ARP request?
+3 How can we implement security in a network without using security protocols?
+4 Assuming a default switch configuration, what is the standard VLAN range that can be modified and removed on a Cisco switch?
+5 Which configuration allows a port to carry traffic for multiple VLANs?
+Page 6
+Lab Task 2: Configure & Verify VLANs
+In a switched network, there may be different types of device groups, such as printers, workstations, and access points. By default, all interfaces on a switch can communicate with each other.
+VLANs permit the creation of virtual groups on the switch, and assign interfaces to different groups. Only interfaces in the same group are able to communicate with each other.
+Configure a VLAN on all network devices and verify that the VLANs were properly configured using various troubleshooting methods.
+Part 1: View the Default VLAN Configuration
+1 Using the CLI, connect S1 and run the command that displays all configured VLANs. Make sure all interfaces are assigned to VLAN 1, by using the command: show vlan brief.
+S1>enable
+S1#show vlan brief
+2 Repeat step 1 on S2.
+S2>enable
+S2#show vlan brief
+Page 7
+Part 2: Create and Name VLANs
+3 Create and name the following VLANs on S1:
+a) VLAN 10: Workstation
+b) VLAN 20: Servers
+S1#configure terminal
+S1(config)#vlan 10
+S1(config-vlan)#name Workstation
+S1(config-vlan)#exit
+S1(config)#vlan 20
+S1(config-vlan)#name Servers
+S1(config-vlan)#exit
+4 Using the same commands as those in the previous step, create and name the same VLANs on S2.
+S2#configure terminal
+S2(config)#vlan 10
+S2(config-vlan)#name Workstation
+S2(config-vlan)#exit
+S2(config)#vlan 20
+S2(config-vlan)#name Servers
+S2(config-vlan)#exit
+Page 8
+Part 3: Assign VLANs to Ports
+5 On S1, assign the VLANs to the following ports:
+a) All ports that connect to workstations and servers must be set in Access mode.
+b) VLAN 10: Fast Ethernet 0/1-2
+c) VLAN 20: Fast Ethernet 0/3
+S1(config)#interface range fastethernet 0/1-2
+S1(config-if-range)#switchport mode access
+S1(config-if-range)#switchport access vlan 10
+S1(config-if-range)#exit
+S1(config)#interface fastethernet 0/3
+S1(config-if)# switchport mode access
+S1(config-if)#switchport access vlan 20
+S1(config-if)#exit
+6 On S2, assign the VLANs to the following ports:
+a) All ports that connect to workstations and servers must be set in Access mode.
+b) VLAN 10: Fast Ethernet 0/1-4.
+c) VLAN 20: Fast Ethernet 0/5-6.
+S2(config)#interface range fastethernet 0/1-4
+S2(config-if-range)#switchport mode access
+S2(config-if-range)#switchport access vlan 10
+S2(config-if-range)#exit
+S2(config)#interface range fastethernet 0/5-6
+S2(config-if-range)# switchport mode access
+S2(config-if-range)#switchport access vlan 20
+S2(config-if-range)#exit
+7 Verify S1 and S2 VLAN configuration using the do show vlan brief command, and save the configuration.
+S1(config)#do show vlan brief
+S2(config)#do show vlan brief
+Page 9
+Part 4: Configure and Verify Basic Connectivity
+8 Assign IP addresses for all workstation hosts using the address range and subnet mask: 10.0.0.0 255.255.255.0 Use the last available IP address as the default gateway.
+9 Assign IP addresses for all server hosts using the address range and subnet mask: 192.168.0.0 255.255.255.0 Use the last available IP address as the default gateway.
+10 Perform a connectivity test between all workstations connected to switch S1.
+11 Repeat the process from the previous step and test connectivity among workstations connected to switch S2.
+12 Test connectivity between PC1 and PC6. The ping should fail.
+Page 10
+Lab Task 3: Configure Trunks and Native VLAN
+To enable VLAN communication between switches, we need to configure trunks.
+Part 1: Configure Trunking Ports
+1 Configure GigabitEthernet0/1 on S1 as trunk.
+S1(config)#interface gigabitethernet 0/1
+S1(config-if)#switchport mode trunk
+S1(config-if)#exit
+S1(config)#exit
+2 Configure GigabitEthernet0/1 on S2 as trunk.
+S2(config)#interface gigabitethernet 0/1
+S2(config-if)#switchport mode trunk
+S2(config-if)#exit
+S2(config)#exit
+Part 2: Configure Native VLAN
+3 Create VLAN 30 on both switches and name it Native.
+S1(config)#vlan 30
+S1(config-vlan)#name Native
+S1(config-vlan)#exit
+S2(config)#vlan 30
+S2(config-vlan)#name Native
+S2(config-vlan)#exit
+4 Configure VLAN 30 as the native VLAN for GigabitEthernet0/1 interface on S1.
+S1(config)#interface gigabitethernet 0/1
+S1(config-if)#switchport trunk native vlan 30
+S1(config-if)#exit
+Page 11
+5 Configure VLAN 30 as the native VLAN for GigabitEthernet0/1 interface on S2.
+S2(config)#interface gigabitethernet 0/1
+S2(config-if)#switchport trunk native vlan 30
+S2(config-if)#exit
+Part 3: Verify Trunk and Native Settings
+6 Stay in Global configuration mode. Note: The do command enables the Privileged mode command in Global configuration mode.
+7 Verify trunk and native VLAN configurations on both switches using the do show interfaces trunk command. Note: You should see both VLANs assigned to the appropriate ports, and for both switches the native VLAN should be VLAN 30.
+S1(config)#do show interface trunk
+S2(config)#do show interface trunk
+8 Save the configuration on both switches.
+S1(config)#exit
+S1#copy running-config startup-config
+S2(config)#exit
+S2#copy running-config startup-config
+Part 4: Verify Connectivity
+9 Try to test connectivity between PC1 and PC3. The ping should succeed.
+10 Try to test connectivity between workstations and servers. The ping should fail.
+Page 12
+Lab Task 4: Configure Router-on-a-Stick
+For different VLANs to communicate with each other, inter-VLAN routing must be configured.
+Part 1: Configure Router-on-a-Stick on R1
+1 Configure GigabitEthernet0/2 on S1 for trunking.
+S1#configure terminal
+S1(config)#interface gigabitethernet 0/2
+S1(config-if)#switchport mode trunk
+S1(config-if)#exit
+2 On R1, enter Global configuration mode.
+R1>enable
+R1#configure terminal
+3 Enter the GigabitEthernet0/0 interface and activate it using the no shutdown command. Then return to Global Configuration.
+R1(config)#interface gigabitethernet 0/0
+R1(config-if)#no shutdown
+R1(config-if)#exit
+4 On R1, create sub-interface GigabitEthernet 0/0.10
+R1(config)#interface gigabitethernet 0/0.10
+R1(config-subif)#
+5 Set the encapsulation type to 802.1Q and assign VLAN 10 to the sub-interface.
+R1(config-subif)#encapsulation dot1q 10
+6 Referring to the addresses used in Lab Task 2, Part 4, Step 8, assign the correct IP address and subnet mask to the sub-interface (workstations). Then return to
+Global Configuration.
+R1(config-subif)#ip address 10.0.0.254 255.255.255.0
+R1(config-subif)#exit
+Page 13
+7 On R1, create sub-interface GigabitEthernet 0/0.20
+R1(config)#interface gigabitethernet 0/0.20
+R1(config-subif)#
+8 Set the encapsulation type to 802.1Q and assign VLAN 20 to the sub-interface.
+R1(config-subif)#encapsulation dot1q 20
+9 Referring to the addresses used in Lab Task 2, Part 4, Step 9, assign the correct IP address and subnet mask to the sub-interface (servers).
+R1(config-subif)#ip address 192.168.0.254 255.255.255.0
+R1(config-subif)#exit
+Part 2: Verify Settings and Inter-VLAN Connectivity
+10 On the router, verify the configuration using the show ip interface brief and show running-config commands.
+R1(config)#do show ip interface brief
+R1(config)#do show running-config
+11 Save the configuration.
+R1(config)#exit
+R1#copy running-config startup-config
+12 From PC1, ping all other PCs and servers. All pings should be successful.
